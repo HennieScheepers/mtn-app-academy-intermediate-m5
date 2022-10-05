@@ -11,6 +11,16 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photoPermission": "Allow $(PRODUCT-NAME) to access your photos.",
+          "savePhotoPermission": "Allow $(PORDUCT-NAME) to save photo.",
+          "isAccesMediaLocationEnabled": "true"
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -18,13 +28,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hennie104.mtnappacademyintermediatem5"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.hennie104.mtnappacademyintermediatem5"
     },
     "web": {
       "favicon": "./assets/favicon.png"
