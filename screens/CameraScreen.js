@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Button, Image } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
-import { Button } from "react-native-web";
 
 export default function CameraScreen() {
   let cameraRef = useRef();
@@ -27,16 +26,16 @@ export default function CameraScreen() {
   } else if (!hasCameraPermission) {
     return (
       <Text>
-        Permission for camera not granted. Please change in settings.{" "}
+        Permission for camera not granted. Please change in settings.
       </Text>
     );
   }
 
   let takePic = async () => {
     let options = {
-      quality : 1,
+      quality: 1,
       base64: true,
-      exif: false
+      exif: false,
     };
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
@@ -45,25 +44,37 @@ export default function CameraScreen() {
 
   if (photo) {
     let sharePic = () => {
-
+      shareAsync(photo.uri).then(() => {
+        setPhoto(undefined);
+      });
     };
 
     let savePic = () => {
-
+      MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
+        setPhoto(undefined);
+      });
     };
 
     return (
-      <SafeAreaView style={style.container}>
-        <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64}}/>
+      <SafeAreaView style={styles.container}>
+        <Image
+          style={styles.preview}
+          source={{ uri: "data:image/jpg;base64," + photo.base64 }}
+        />
+        <Button title="Share" onPress={sharePic} />
+        {hasMediaLibraryPermission ? (
+          <Button title="Save" onPress={savePic} />
+        ) : undefined}
+        <Button title="Discard" onPress={() => setPhoto(undefined)} />
       </SafeAreaView>
     );
   }
 
   return (
     <Camera style={styles.container} ref={cameraRef}>
-      <View>
-        {" "}
+      <View
         style={styles.buttonContainer}
+      >
         <Button title="Take Pic" onPress={takePic} />
       </View>
     </Camera>
@@ -73,14 +84,14 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContainer: {
-    backgroundColor: '#fff',
-    alignSelf : 'flex-end'
+    backgroundColor: "#fff",
+    alignSelf: "flex-end",
   },
   preview: {
-    alignSelf: 'stretch'
-  }
+    alignSelf: "stretch",
+  },
 });
